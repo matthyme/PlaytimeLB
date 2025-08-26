@@ -1,0 +1,18 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+
+license="MIT"
+
+[[mods]]
+modId="playtimelb"
+version="${file.jarVersion}"
+displayName="Playtime Leaderboard (Forge)"
+authors="Matt + ChatGPT"
+description='''Manual server-side playtime tracking (join/leave), leaderboard, and InfluxDB exports (totals + sessions).'''
+
+[[dependencies.playtimelb]]
+modId="forge"
+mandatory=true
+versionRange="[47.0.0,)"
+ordering="NONE"
+side="SERVER"
