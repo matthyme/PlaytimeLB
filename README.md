@@ -4,7 +4,6 @@ This build drops vanilla stats and tracks **server-only playtime** using **join/
 It also exports **totals** (seconds) and **session events/summaries** to InfluxDB.
 
 ## Commands
-- `/playtime`
 - `/playtime top [limit]`
 - `/playtime show <player>`
 - `/playtime export` (OP) — push current totals to Influx
