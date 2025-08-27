@@ -19,11 +19,10 @@ public class PlaytimeCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(net.minecraft.commands.Commands.literal("playtime")
             .requires(src -> src.hasPermission(0))
-            .then(net.minecraft.commands.Commands.literal("top")
-                .executes(ctx -> top(ctx.getSource(), 10))
-                .then(net.minecraft.commands.Commands.argument("limit", IntegerArgumentType.integer(1, 100))
-                    .executes(ctx -> top(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "limit")))
-                )
+            // Make /playtime show the top list by default
+            .executes(ctx -> top(ctx.getSource(), 10))
+            .then(net.minecraft.commands.Commands.argument("limit", IntegerArgumentType.integer(1, 100))
+                .executes(ctx -> top(ctx.getSource(), IntegerArgumentType.getInteger(ctx, "limit")))
             )
             .then(net.minecraft.commands.Commands.literal("show")
                 .then(net.minecraft.commands.Commands.argument("playerName", StringArgumentType.string())
