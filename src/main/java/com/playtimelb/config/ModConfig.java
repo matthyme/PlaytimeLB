@@ -24,6 +24,20 @@ public class ModConfig {
     public static final ForgeConfigSpec.IntValue autoExportMinutes;
     public static final ForgeConfigSpec.BooleanValue autoExportEnabled;
 
+    // Backfill
+    public static final ForgeConfigSpec.BooleanValue backfillEnabled;
+    public static final ForgeConfigSpec.ConfigValue<String> backfillSource; // "vanilla" | "store"
+    public static final ForgeConfigSpec.ConfigValue<String> backfillAsOf;   // ISO-8601 or ""
+    public static final ForgeConfigSpec.BooleanValue backfillOnlyOnce;
+
+b.comment("Automatic one-time totals backfill to Influx").push("backfill");
+backfillEnabled = b.define("enabled", false);
+backfillSource = b.define("source", "vanilla");
+backfillAsOf   = b.define("asOf", "");
+backfillOnlyOnce = b.define("onlyOnce", true);
+b.pop();
+
+
     static {
         ForgeConfigSpec.Builder b = new ForgeConfigSpec.Builder();
 

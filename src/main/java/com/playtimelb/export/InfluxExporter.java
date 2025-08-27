@@ -89,6 +89,34 @@ public class InfluxExporter {
         });
     }
 
+    public static int exportTotalsAtInstant(Map<UUID, Long> secondsByPlayer, long epochSeconds) throws Exception {
+    if (!ModConfig.influxEnabled.get()) return 0;
+
+    String bucket = ModConfig.influxBucket.get(), org = ModConfig.influxOrg.get();
+    String token = ModConfig.influxToken.get(), url = ModConfig.influxUrl.get();
+    String measurement = ModConfig.measurement.get(), serverTag = ModConfig.serverTag.get();
+
+    String body = secondsByPlayer.entrySet().stream().map(e -> {
+        String tags = (serverTag != null && !serverTag.isEmpty() ? "server=" + sanitize(serverTag) + "," : "")
+                    + "uuid=" + e.getKey();
+        // integer field "seconds", timestamp supplied below with precision=s
+        return String.format("%s,%s seconds=%di %d", sanitize(measurement), tags, e.getValue(), epochSeconds);
+    }).collect(java.util.stream.Collectors.joining("\n"));
+
+    HttpRequest req = HttpRequest.newBuilder()
+        .uri(URI.create(url + "/api/v2/write?org=" + encode(org) + "&bucket=" + encode(bucket) + "&precision=s"))
+        .header("Authorization", "Token " + token)
+        .header("Content-Type", "text/plain; charset=utf-8")
+        .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
+        .build();
+
+    HttpResponse<String> resp = httpClient.send(req, HttpResponse.BodyHandlers.ofString());
+    PlaytimeLeaderboardMod.LOGGER.info("[PlaytimeLB] backfill write status={} body={}", resp.statusCode(), resp.body());
+    if (resp.statusCode() / 100 != 2) throw new RuntimeException("Influx write failed: " + resp.statusCode() + " " + resp.body());
+    return secondsByPlayer.size();
+}
+
+
     private static String encode(String s) {
         return java.net.URLEncoder.encode(s, java.nio.charset.StandardCharsets.UTF_8);
     }

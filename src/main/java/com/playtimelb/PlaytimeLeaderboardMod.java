@@ -29,6 +29,7 @@ public class PlaytimeLeaderboardMod {
         ModLoadingContext.get().registerConfig(Type.COMMON, ModConfig.SPEC);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new SessionTracker());
+        MinecraftForge.EVENT_BUS.register(new com.playtimelb.backfill.BackfillRunner());
     }
 
     @SubscribeEvent
